@@ -18,7 +18,7 @@ private:
     string edgeFile;
 
 public:
-    LocationGraph(string locationFile = "location_codes.txt", string edgeFile = "location_edges.txt")
+    LocationGraph(string locationFile = "locations/location_codes.txt", string edgeFile = "locations/location_edges.txt")
     {
         this->locationFile = locationFile;
         this->edgeFile = edgeFile;
