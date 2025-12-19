@@ -87,16 +87,28 @@ public:
             {
             case 1:
             {
-                cout << "Enter Username: ";
-                cin >> username;
-                cout << "Enter Password: ";
-                cin >> password;
-                if (!login(username, password))
+                for (int attempts = 0; true; attempts++)
                 {
-                    cout << "Login failed. Please try again." << endl;
-                    return;
+                    cout << "Enter Username: ";
+                    cin >> username;
+                    cout << "Enter Password: ";
+                    cin >> password;
+                    if (login(username, password))
+                    {
+                        cout << "Log-in Successfull!" << endl;
+                        break;
+                    }
+                    else
+                    {
+                        cout << "Login Failed..." << endl
+                             << (attempts < 3 ? ("Please Try Again (" + to_string(3 - attempts) + " attempts left)") : "Maximum Attempts Reached. Aborting...") << endl;
+                    }
+                    if (attempts == 3)
+                    {
+                        return;
+                    }
                 }
-                break;
+            break;
             }
             case 2:
             {
@@ -106,7 +118,13 @@ public:
                 cin >> password;
                 if (!signup(username, password))
                 {
-                    return;
+                    cout << "Sign-up Unsuccessful... Try Again (N/n to Abort)?";
+                    string choice;
+                    cin >> choice;
+                    if (choice == "N" || choice =="n")
+                    {   
+                        return;
+                    }
                 }
                 break;
             }

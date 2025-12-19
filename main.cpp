@@ -3,6 +3,7 @@ using namespace std;
 
 #include "admin.h"
 #include "customers.h"
+#include "restaurant.h"
 
 class Application
 {
@@ -38,9 +39,12 @@ private:
             break;
         }
         case 2:
+        {
             cout << "Restaurant Login selected." << endl;
-            // Call Restaurant Login function here
+            Restaurant restaurantPanel;
+            restaurantPanel.restaurantWindow();
             break;
+        }
         case 3:
             cout << "Delivery Personnel Login selected." << endl;
             // Call Delivery Personnel Login function here
