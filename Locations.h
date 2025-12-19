@@ -98,6 +98,15 @@ public:
         return -1; // Not found
     }
 
+    string codeToLocation(int code)
+    {
+        if (locations.find(code) != locations.end())
+        {
+            return locations[code];
+        }
+        return "Unknown"; // Not found
+    }
+
     void printGraph()
     {
         for (const auto &pair : adjList)

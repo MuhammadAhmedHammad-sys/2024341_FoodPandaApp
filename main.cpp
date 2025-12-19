@@ -2,6 +2,7 @@
 using namespace std;
 
 #include "admin.h"
+#include "customers.h"
 
 class Application
 {
@@ -26,13 +27,16 @@ private:
         int choice;
         cout << "Enter your choice: ";
         cin >> choice;
-        cout<<endl;
+        cout << endl;
         switch (choice)
         {
         case 1:
+        {
             cout << "Customer Login selected." << endl;
-            // Call Customer Login function here
+            Customer customerPanel;
+            customerPanel.customerWindow();
             break;
+        }
         case 2:
             cout << "Restaurant Login selected." << endl;
             // Call Restaurant Login function here
