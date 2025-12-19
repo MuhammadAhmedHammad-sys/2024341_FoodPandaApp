@@ -26,6 +26,7 @@ private:
         int choice;
         cout << "Enter your choice: ";
         cin >> choice;
+        cout<<endl;
         switch (choice)
         {
         case 1:

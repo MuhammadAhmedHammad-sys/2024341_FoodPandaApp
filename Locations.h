@@ -13,6 +13,7 @@ class LocationGraph
 {
 private:
     map<int, string> locations;  // Map of location code to Location
+    map<string, int> nameToCode; // Map of Location to location code
     map<int, list<int>> adjList; // Adjacency list for the graph
     string locationFile;
     string edgeFile;
@@ -30,6 +31,7 @@ public:
         while (locFile >> code >> name)
         {
             locations[code] = name;
+            nameToCode[name] = code;
         }
         locFile.close();
 
@@ -80,6 +82,20 @@ public:
             }
         }
         edgeFileHandle.close();
+    }
+
+    bool locationExists(int code)
+    {
+        return locations.find(code) != locations.end();
+    }
+
+    int locationToCode(const string &name)
+    {
+        if (nameToCode.find(name) != nameToCode.end())
+        {
+            return nameToCode[name];
+        }
+        return -1; // Not found
     }
 
     void printGraph()
