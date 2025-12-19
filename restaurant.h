@@ -29,7 +29,7 @@ public:
         return false;
     }
 
-    void restauratWindow()
+    void restaurantWindow()
     {
         cout << "========= Restaurant Panel =========" << endl;
         if (!verified)
