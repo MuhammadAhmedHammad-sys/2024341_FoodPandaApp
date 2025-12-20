@@ -5,8 +5,8 @@
 #include <string>
 using namespace std;
 
-#include "restaurant.h";
-#include "menu.h";
+#include "restaurant.h"
+#include "menu.h"
 
 class RestaurantWindow
 {
