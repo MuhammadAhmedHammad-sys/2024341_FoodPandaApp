@@ -8,12 +8,6 @@ using namespace std;
 #include "restaurant.h"
 #include "menu.h"
 
-class RestaurantWindow
-{
-public:
-RestaurantWindow(Restaurants* r) {};
 
-void menu(){};
-};
 
 #endif

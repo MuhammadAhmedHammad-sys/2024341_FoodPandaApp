@@ -8,6 +8,7 @@ using namespace std;
 struct Item_Node
 { // Structure representing a single food item in a menu
     Item_Node *lchild;
+    int sr_no;
     int price;
     string name;
     Item_Node *rchild;
@@ -27,6 +28,7 @@ public:
         root = nullptr;
         changes = false;
         this->res_name = res_name;
+        loadMenu();
     }
 
     int NodeHeight(Item_Node *p)
@@ -175,29 +177,30 @@ public:
         return pr;
     }
 
-    Item_Node *RInsert(Item_Node *p, int price, string name)
+    Item_Node *RInsert(Item_Node *p, Item_Node i)
     {
         Item_Node *t;
 
         if (p == nullptr)
         {
             t = new Item_Node;
-            t->price = price;
-            t->name = name;
+            t->price = i.price;
+            t->name = i.name;
+            t->sr_no = i.sr_no;
             t->lchild = nullptr;
             t->rchild = nullptr;
             t->height = 1;
             return t;
         }
 
-        if (price > p->price)
+        if (i.sr_no > p->sr_no)
         {
-            p->rchild = RInsert(p->rchild, price, name);
+            p->rchild = RInsert(p->rchild, i);
         }
 
-        else if (price < p->price)
+        else if (i.sr_no < p->sr_no)
         {
-            p->lchild = RInsert(p->lchild, price, name);
+            p->lchild = RInsert(p->lchild, i);
         }
 
         p->height = NodeHeight(p);
@@ -225,10 +228,49 @@ public:
         return p;
     }
 
-    void insertItem(int price, string name)
+    void insertItem(Item_Node i)
     {
-        root = RInsert(root, price, name);
+        root = RInsert(root, i);
         changes = true;
+    }
+
+    Item_Node *search(int key)
+    {
+        Item_Node *p = root;
+
+        while (p != nullptr)
+        {
+            if (key == p->sr_no)
+            {
+                return p;
+            }
+
+            else if (key > p->sr_no)
+            {
+                p = p->rchild;
+            }
+
+            else
+            {
+                p = p->lchild;
+            }
+        }
+
+        return nullptr;
+    }
+
+    void loadMenu()
+    {
+        string filename = "menus" + res_name + "_menu.txt";
+        ifstream file(filename);
+        Item_Node temp;
+        string sr_no, price;
+        while (getline(file, sr_no) && getline(file, price) && getline(file, temp.name))
+        {
+            temp.sr_no = stoi(sr_no);
+            temp.price = stoi(price);
+            insertItem(temp);
+        }
     }
 
     void writeToFile(Item_Node *p, ofstream &file)
