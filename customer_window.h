@@ -97,28 +97,13 @@ public:
     
     void displayRestaurants()
     {
-        cout<<"By Location or By Price? (L/P): ";
-        char choice;
-        cin>>choice;
-        if(choice == 'L' || choice == 'l')
-        {
-            //r_arr->sort('l');
-            r_arr->display();
-        }
-        else if(choice == 'P' || choice == 'p')
-        {
-            //r_arr->sort('p');
-            r_arr->display();
-        }
-        else
-        {
-            cout<<"Invalid choice!\n";
-        }
+        r_arr->chooseSortMethod();
+        r_arr->display();
     }
 
     void openRestaurant(int res_id)
     {
-        string res_name = r_arr->getResName(res_id);
+        string res_name = r_arr->getResByID(res_id)->name;
         Menus menu(res_name);
         cout<<"\n========= "<<res_name<<"========\n";
         cout<<"1. View Menu\n";
@@ -131,7 +116,7 @@ public:
         {
             case 1:
                 cout<<"Displaying menu for "<<res_name<<"\n";
-                // menu.display();
+                menu.displayItems();
                 break;
             case 2:
                 takeOrder(menu, res_id);
@@ -143,7 +128,6 @@ public:
 
     void takeOrder(Menus &menu, int res_id)
     {
-        //takes multiple items and adds to order history
         int total_price = 0;
         string item_id;
         bool ordering = true;
@@ -157,15 +141,18 @@ public:
             }
             else
             {
-                //search item in menu and get price
-                //add price to total_price
-                //for simplicity, assuming each item costs 100
-                total_price += 100;
-                cout<<item_id<<" added to order. Current total: "<<total_price<<"\n";
+                Item_Node* item = menu.search(stoi(item_id));
+                if(!item)
+                {
+                    cout<<"Item not found!\n";
+                    continue;
+                }
+                total_price += item->price;
+                cout<<item->name<<" added to order. Current total: "<<total_price<<"\n";
             }
         }
         cout<<"Calculating delivery path...\n\t";
-        loc_list.displayPath(loc_list.findPath(r_arr->getLocID(res_id), user->getLocID()));
+        loc_list.displayPath(loc_list.findPath(r_arr->getResByID(res_id)->loc_id, user->getLocID()));
         user->addOrder(res_id, total_price);
         cout<<"Order placed! Total price: "<<total_price<<"\n";
     }

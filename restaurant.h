@@ -2,12 +2,6 @@
 #include <fstream>
 using namespace std;
 
-struct Manager
-{
-    string username;
-    string password;
-};
-
 struct Res_Node
 {
     int id;
@@ -115,28 +109,16 @@ public:
         }
     }
 
-    string getResName(int res_id)
+    Res_Node* getResByID(int res_id)
     {
         for (int i = 0; i < res_count; i++)
         {
             if (res_arr[i].id == res_id)
             {
-                return res_arr[i].name;
+                return &res_arr[i];
             }
         }
-        return "";
-    }
-
-    int getLocID(int res_id)
-    {
-        for (int i = 0; i < res_count; i++)
-        {
-            if (res_arr[i].id == res_id)
-            {
-                return res_arr[i].loc_id;
-            }
-        }
-        return -1; // not found
+        return nullptr; // not found
     }
 
     void display()

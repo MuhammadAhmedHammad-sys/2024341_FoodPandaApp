@@ -303,6 +303,22 @@ public:
         return true;
     }
 
+    void inorder(Item_Node *p)
+    {
+        if (p)
+        {
+            inorder(p->lchild);
+            cout << p->sr_no << ". " << p->name << " - " << p->price << "\n";
+            inorder(p->rchild);
+        }
+    }
+
+    void displayItems()
+    {
+        inorder(root);
+        cout << endl;
+    }
+
     ~Menus()
     {
         if (changes)
