@@ -68,6 +68,7 @@ public:
         cout<<"1. View Available Restaurants\n";
         cout<<"2. View Order History\n";
         cout<<"3. Logout\n";
+        cout<<"4. Open Restaurant\n";
         cout<<"Enter your choice: ";
         cin>>choice;
         switch(choice)
@@ -81,10 +82,68 @@ public:
             case 3:
                 cout<<"Logging out...\n";
                 break;
+            case 4:
+                int res_id;
+                cout<<"Enter Restaurant ID to open: ";
+                cin>>res_id;
+                openRestaurant(res_id);
+                break;
             default:
                 cout<<"Invalid choice!\n";
         }
     };
+
+    void openRestaurant(int res_id)
+    {
+        string res_name = r_arr->getResName(res_id);
+        Menus menu(res_name);
+        cout<<"\n========= "<<res_name<<"========\n";
+        cout<<"1. View Menu\n";
+        cout<<"2. Place Order\n";
+        int choice;
+        cin>>choice;
+        switch(choice)
+
+
+        {
+            case 1:
+                cout<<"Displaying menu for "<<res_name<<"\n";
+                // menu.display();
+                break;
+            case 2:
+                takeOrder(menu, res_id);
+                break;
+            default:
+                cout<<"Invalid choice!\n";
+        }
+    }
+
+    void takeOrder(Menus &menu, int res_id)
+    {
+        //takes multiple items and adds to order history
+        int total_price = 0;
+        string item_id;
+        bool ordering = true;
+        while(ordering)
+        {
+            cout<<"Enter item id to add to order (or 'done' to finish): ";
+            cin>>item_id;
+            if(item_id == "done")
+            {
+                ordering = false;
+            }
+            else
+            {
+                //search item in menu and get price
+                //add price to total_price
+                //for simplicity, assuming each item costs 100
+                total_price += 100;
+                cout<<item_id<<" added to order. Current total: "<<total_price<<"\n";
+            }
+        }
+        user->addOrder(res_id, total_price);
+        cout<<"Order placed! Total price: "<<total_price<<"\n";
+    }
 
     void displayOrderHistory()
     {

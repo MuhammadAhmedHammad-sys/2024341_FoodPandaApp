@@ -9,16 +9,10 @@
 #include <fstream>
 using namespace std;
 
-struct Location
-{
-    int code;
-    string name;
-};
-
 class LocationGraph
 {
 private:
-    map<int, Location> locations;  // Map of location code to Location
+    map<int, string> locations;  // Map of location code to Location
     map<int, list<int>> adjList; // Adjacency list for the graph
     string locationFile;
     string edgeFile;
@@ -35,7 +29,7 @@ public:
         string name;
         while (locFile >> code >> name)
         {
-            locations[code] = {code, name};
+            locations[code] = name;
         }
         locFile.close();
 
@@ -54,7 +48,7 @@ public:
         {
             return false;
         }
-        locations[code] = {code, name};
+        locations[code] = name;
         return true;
     }
 
@@ -71,7 +65,7 @@ public:
         ofstream locFile(locationFile);
         for (const auto &loc : locations)
         {
-            locFile << loc.first << " " << loc.second.name << endl;
+            locFile << loc.first << " " << loc.second << endl;
         }
         locFile.close();
 
@@ -92,10 +86,10 @@ public:
     {
         for (const auto &pair : adjList)
         {
-            cout << "Location " << pair.first << " (" << locations[pair.first].name << "): ";
+            cout << "Location " << pair.first << " (" << locations[pair.first] << "): ";
             for (int neighbor : pair.second)
             {
-                cout << neighbor << " (" << locations[neighbor].name << ") ";
+                cout << neighbor << " (" << locations[neighbor] << ") ";
             }
             cout << endl;
         }
@@ -141,6 +135,17 @@ public:
         path.push_front(start);
 
         return path;
+    }
+
+    void displayPath(const list<int> &path)
+    {
+        for (int locCode : path)
+        {
+            cout << locCode << " (" << locations[locCode] << ") ";
+            if (locCode != path.back())
+                cout << "-> ";
+        }
+        cout << endl;
     }
 
     ~LocationGraph()

@@ -283,6 +283,11 @@ public:
         return head;
     }
 
+    int getLocID()
+    {
+        return user.location_code;
+    }
+
     bool saveToFile()
     {
         ofstream file(fileName(user.username), ios::trunc);
