@@ -271,6 +271,18 @@ public:
         }
     }
 
+    void addOrder(int restrauntID, int price)
+    {
+        OrderRecord newOrder = {restrauntID, price};
+        head = new OrderNode(newOrder, head);
+        changes = true;
+    }
+
+    OrderNode* getOrderHistory()
+    {
+        return head;
+    }
+
     bool saveToFile()
     {
         ofstream file(fileName(user.username), ios::trunc);

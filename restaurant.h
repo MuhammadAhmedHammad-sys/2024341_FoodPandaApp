@@ -1,3 +1,6 @@
+#ifndef RESTAURANT_H
+#define RESTAURANT_H
+
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -83,3 +86,5 @@ public:
         }
     }
 };
+
+#endif

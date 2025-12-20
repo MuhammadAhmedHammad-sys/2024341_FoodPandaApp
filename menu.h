@@ -1,3 +1,6 @@
+#ifndef MENU_H
+#define MENU_H
+
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -266,3 +269,5 @@ public:
         }
     }
 };
+
+#endif
