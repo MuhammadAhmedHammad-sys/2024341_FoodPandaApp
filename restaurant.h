@@ -26,7 +26,7 @@ public:
         changes = false;
     }
 
-    void add_res(int id, string name, float rating)
+    void add_res(int id, string name, float rating, int loc_id)
     {
         if (res_count >= MAX)
         {
@@ -38,6 +38,7 @@ public:
         r.id = id;
         r.name = name;
         r.rating = rating;
+        r.loc_id = loc_id;
         res_arr[res_count] = r;
         res_count += 1;
         changes = true;
@@ -52,6 +53,20 @@ public:
             cout << res_arr[i].name << " ";
             cout << res_arr[i].rating << " ";
             cout << endl;
+        }
+    }
+
+    void loadRestaurants(const string &filename = "restaurants/restaurants.txt")
+    {
+        ifstream file(filename);
+        Res_Node temp;
+        string id, rating, loc_id;
+        while (getline(file, id) && getline(file, temp.name) && getline(file, rating) && getline(file, loc_id))
+        {
+            temp.id = stoi(id);
+            temp.name = name;
+            temp.rating = stoi(rating);
+            temp.loc_id = stoi(loc_id);
         }
     }
 
