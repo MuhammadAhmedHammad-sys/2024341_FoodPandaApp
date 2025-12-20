@@ -3,138 +3,184 @@
 
 #include <iostream>
 #include <string>
-#include <map>
-#include <list>
-#include <queue>
 #include <fstream>
 using namespace std;
+
+struct Location
+{
+    int code;
+    string name;
+    Location(int c, string n) : code(c), name(n) {};
+};
+
+struct LocationNode
+{
+    Location data;
+    LocationNode *next;
+    LocationNode(Location d, LocationNode *n) : data(d), next(n) {};
+};
+
+struct LocationList
+{
+    LocationNode *head;
+    LocationList *next;
+    LocationList() : head(nullptr) {};
+    LocationList(LocationNode *h, LocationList *n) : head(h), next(n) {};
+};
 
 class LocationGraph
 {
 private:
-    map<int, string> locations;  // Map of location code to Location
-    map<int, list<int>> adjList; // Adjacency list for the graph
+    LocationList *locations_head; // Adjacency list for the graph
     string locationFile;
     string edgeFile;
 
 public:
-    LocationGraph(string locationFile = "locations/location_codes.txt", string edgeFile = "locations/location_edges.txt")
+    LocationGraph(const string &locationFile = "locations/location_codes.txt", const string &edgeFile = "locations/location_edges.txt")
     {
+        this->locations_head = nullptr;
         this->locationFile = locationFile;
         this->edgeFile = edgeFile;
 
         // Read locations from file
-        ifstream locFile(locationFile);
-        int code;
-        string name;
-        while (locFile >> code >> name)
-        {
-            locations[code] = name;
-        }
-        locFile.close();
-
-        // Read edges from file
-        ifstream edgeFileHandle(edgeFile);
-        int from, to;
-        while (edgeFileHandle >> from >> to)
-        {
-            adjList[from].push_back(to);
-        }
+        readFromFile();
     }
 
     bool addLocation(int code, string name)
     {
-        if (locations.find(code) != locations.end())
+        for (LocationList *locList = locations_head; locList != nullptr; locList = locList->next)
         {
-            return false;
+            if (locList->head->data.code == code)
+                return false; // Location already exists
         }
-        locations[code] = name;
+        LocationNode *newLocNode = new LocationNode(Location(code, name), nullptr);
+        locations_head = new LocationList(newLocNode, locations_head);
         return true;
     }
 
     void addEdge(int from, int to, bool directed = false)
     {
-        adjList[from].push_back(to);
-        if (!directed)
-            adjList[to].push_back(from); // Assuming undirected graph
+        LocationList *fromList = nullptr;
+        LocationList *toList = nullptr;
+        for (LocationList *locList = locations_head; locList != nullptr; locList = locList->next)
+        {
+            if (locList->head->data.code == from)
+                fromList = locList;
+            if (locList->head->data.code == to)
+                toList = locList;
+        }
+        if (fromList && toList)
+        {
+            fromList->head = new LocationNode(toList->head->data, fromList->head);
+            if (!directed)
+            {
+                toList->head = new LocationNode(fromList->head->data, toList->head);
+            }
+        }
+    }
+
+    void readFromFile()
+    {
+        // format: code, name
+        ifstream lFile(locationFile);
+        int code;
+        string name;
+        while (lFile >> code && getline(lFile, name))
+        {
+            addLocation(code, name);
+        }
+        lFile.close();
+
+        // format: from, to
+        ifstream eFile(edgeFile);
+        int from, to;
+        while (eFile >> from >> to)
+        {
+            addEdge(from, to, true);
+        }
     }
 
     void saveToFile()
     {
-        // Save locations to file
-        ofstream locFile(locationFile);
-        for (const auto &loc : locations)
+        ofstream lFile(locationFile);
+        for (LocationList *locList = locations_head; locList != nullptr; locList = locList->next)
         {
-            locFile << loc.first << " " << loc.second << endl;
+            lFile << locList->head->data.code << " " << locList->head->data.name << "\n";
         }
-        locFile.close();
+        lFile.close();
 
-        // Save edges to file
-        ofstream edgeFileHandle(edgeFile);
-        for (const auto &pair : adjList)
+        ofstream eFile(edgeFile);
+        for (LocationList *locList = locations_head; locList != nullptr; locList = locList->next)
         {
-            int from = pair.first;
-            for (int to : pair.second)
+            LocationNode *fromNode = locList->head;
+            for (LocationNode *toNode = fromNode->next; toNode != nullptr; toNode = toNode->next)
             {
-                edgeFileHandle << from << " " << to << endl;
+                eFile << fromNode->data.code << " " << toNode->data.code << "\n";
             }
         }
-        edgeFileHandle.close();
+        eFile.close();
     }
 
     void printGraph()
     {
-        for (const auto &pair : adjList)
+        for (LocationList *locList = locations_head; locList != nullptr; locList = locList->next)
         {
-            cout << "Location " << pair.first << " (" << locations[pair.first] << "): ";
-            for (int neighbor : pair.second)
+            cout << locList->head->data.code << " (" << locList->head->data.name << ") : ";
+            for (LocationNode *node = locList->head->next; node != nullptr; node = node->next)
             {
-                cout << neighbor << " (" << locations[neighbor] << ") ";
+                cout << node->data.code << " (" << node->data.name << ") -> ";
             }
-            cout << endl;
+            cout << "nullptr\n";
         }
     }
 
-    list<int> findPath(int start, int end)
+    bool dfs(int current, int end, LocationNode *&path, LocationNode *visited)
     {
-        list<int> path;
-        // Simple BFS for pathfinding
-        map<int, int> parent;
-        map<int, bool> visited;
-        queue<int> q;
+        // mark visited
+        visited = new LocationNode(Location(current, ""), visited);
 
-        visited[start] = true;
-        q.push(start);
-
-        while (!q.empty())
+        if (current == end)
         {
-            int current = q.front();
-            q.pop();
+            path = new LocationNode(Location(current, ""), path);
+            return true;
+        }
 
-            if (current == end)
-                break;
+        LocationList *curList = nullptr;
+        for (LocationList *l = locations_head; l; l = l->next)
+            if (l->head->data.code == current)
+                curList = l;
 
-            for (int neighbor : adjList[current])
+        if (!curList)
+            return false;
+
+        for (LocationNode *n = curList->head->next; n; n = n->next)
+        {
+            int next = n->data.code;
+
+            bool seen = false;
+            for (LocationNode *v = visited; v; v = v->next)
+                if (v->data.code == next)
+                    seen = true;
+
+            if (!seen && dfs(next, end, path, visited))
             {
-                if (!visited[neighbor])
-                {
-                    visited[neighbor] = true;
-                    parent[neighbor] = current;
-                    q.push(neighbor);
-                }
+                path = new LocationNode(Location(current, ""), path);
+                return true;
             }
         }
 
-        // Reconstruct path
-        int current = end;
-        while (current != start)
-        {
-            path.push_front(current);
-            current = parent[current];
-        }
-        path.push_front(start);
+        return false;
+    }
 
-        return path;
+    LocationList *findPath(int start, int end)
+    {
+        LocationNode *path = nullptr;
+        LocationNode *visited = nullptr;
+
+        if (dfs(start, end, path, visited))
+            return new LocationList(path, nullptr);
+
+        return nullptr;
     }
 
     ~LocationGraph()
@@ -144,3 +190,10 @@ public:
 };
 
 #endif
+
+int main()
+{
+    LocationGraph graph;
+graph.printGraph();
+    return 0;
+}

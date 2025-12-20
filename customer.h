@@ -39,7 +39,7 @@ public:
             this->size++;
         file.close();
 
-        this->size = 2 * size + 16;
+        this->size = 3 * size + 13;
         this->table = new CustomerNode *[size];
         for (int i = 0; i < size; i++)
             table[i] = nullptr;
@@ -184,8 +184,8 @@ private:
     CustomerHashTable *HashTable;
     Customer user;
     OrderNode *head; // store order history
-    bool verified;
-    bool changes;
+    bool verified = false;
+    bool changes = false;
 
 public:
     CurrentCustomer(CustomerHashTable *table) : HashTable(table), head(nullptr), verified(false) {};
@@ -213,6 +213,7 @@ public:
     {
         if (verify(user_name, password))
         {
+            loadOrderHistory(user_name);
             return true;
         }
         else

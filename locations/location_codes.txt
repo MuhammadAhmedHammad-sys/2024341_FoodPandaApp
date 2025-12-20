@@ -1,4 +1,4 @@
-1 Midtown
-2 Uptown
-3 Downtown
-4 Suburb
+4  Suburb
+4  Suburb
+2  Uptown
+2  Uptown
