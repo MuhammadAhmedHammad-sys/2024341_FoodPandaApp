@@ -21,6 +21,7 @@ public:
     bool login(int ID)
     {
         current = r_arr->getResByID(ID);
+
         if (!current)
         {
             cout << "Login failed! Incorrect Restaurant ID.\n";
@@ -47,56 +48,71 @@ public:
 
     void menu()
     {
+        bool verified = false;
+
         cout << "\n===== Restaurant Manager Menu =====\n";
-        cout << "1. Login\n";
-        cout << "2. Signup\n";
-        cout << "Enter your choice: ";
-        int choice;
-        cin >> choice;
-        switch (choice)
+        do
         {
-        case 1:
-        {
-            int res_id;
-            cout << "Enter Restaurant ID: ";
-            cin >> res_id;
-            if (login(res_id))
+            cout << "1. Login\n";
+            cout << "2. Signup\n";
+            cout << "Enter your choice: ";
+            int choice;
+            cin >> choice;
+            switch (choice)
             {
-                cout << "Login successful!\n";
+            case 1:
+            {
+                int res_id;
+                cout << "Enter Restaurant ID: ";
+                cin >> res_id;
+                verified = login(res_id);
+                if (verified)
+                {
+                    cout << "Login successful!\n";
+                }
+                break;
+            }
+            case 2:
+            {
+                string res_name;
+                int res_id;
+                int loc_code;
+                float rating;
+                cout << "Enter Restaurant ID: ";
+                cin >> res_id;
+                cout << "Enter Restaurant Name: ";
+                cin.ignore();
+                getline(cin, res_name);
+                cout << "Enter Location Code: ";
+                cin >> loc_code;
+                cout << "Enter Rating: ";
+                cin >> rating;
+                verified = signup(res_id, res_name, loc_code, rating);
+                if (verified)
+                {
+                    cout << "Signup successful! You are now logged in.\n";
+                }
             }
             break;
-        }
-        case 2:
-        {
-            string res_name;
-            int res_id;
-            int loc_code;
-            float rating;
-            cout << "Enter Restaurant ID: ";
-            cin >> res_id;
-            cout << "Enter Restaurant Name: ";
-            cin >> res_name;
-            cout << "Enter Location Code: ";
-            cin >> loc_code;
-            cout << "Enter Rating: ";
-            cin >> rating;
-            if (signup(res_id, res_name, loc_code, rating))
-            {
-                cout << "Signup successful! You are now logged in.\n";
+            default:
+                cout << "Invalid choice!\n";
             }
-        }
-        break;
-        default:
-            cout << "Invalid choice!\n";
-        }
+
+            if (!verified)
+            {
+                cout << "Please try again.\n";
+            }
+
+        } while (!verified);
 
         while (true)
         {
-            cout << "\n===== Options =====\n";
+            cout << "\n=====" << current->name << "=====\n";
             cout << "1. View Menu\n";
             cout << "2. Add Menu Item\n";
             cout << "3. Logout\n";
             cout << "Enter your choice: ";
+            int choice;
             cin >> choice;
             switch (choice)
             {
@@ -119,7 +135,7 @@ public:
             }
             case 3:
                 cout << "Logging out...\n";
-                break;
+                return;
             default:
                 cout << "Invalid choice!\n";
             }

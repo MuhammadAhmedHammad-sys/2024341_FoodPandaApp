@@ -95,7 +95,7 @@ public:
 
     void sortByRating(Res_Node A[], int n)
     {
-        int x;
+        float x;
 
         for (int i = 1; i < n; i++)
         {
@@ -163,6 +163,7 @@ public:
             file << res_arr[i].id << "\n";
             file << res_arr[i].name << "\n";
             file << res_arr[i].rating << "\n";
+            file << res_arr[i].loc_id << "\n";
         }
 
         file.close();
