@@ -37,7 +37,6 @@ public:
                 if(user->login(username, password))
                 {
                     cout<<"Login successful!\n";
-                    // Further customer functionalities can be added here
                 }
                 else
                 {
@@ -55,7 +54,6 @@ public:
                 if(user->signup(username, password, loc_code))
                 {
                     cout<<"Signup successful! You are now logged in.\n";
-                    // Further customer functionalities can be added here
                 }
                 else
                 {
@@ -78,7 +76,6 @@ public:
                 r_arr->display();
                 break;
             case 2:
-                // Functionality to view order history can be implemented here
                 displayOrderHistory();
                 break;
             case 3:
